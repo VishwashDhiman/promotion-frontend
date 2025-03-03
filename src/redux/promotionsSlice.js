@@ -19,8 +19,6 @@ const promotionsSlice = createSlice({
       if (index !== -1) {
         state.list[index] = action.payload;
       }
-      console.log("State==>>>", state.list[index]);
-      console.log("action==>>>", action.payload.id);
     },
     deletePromotion: (state, action) => {
       state.list = state.list.filter((promo) => promo.id !== action.payload);

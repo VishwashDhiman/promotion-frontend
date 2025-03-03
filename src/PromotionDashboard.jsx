@@ -1,19 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { setPromotions, updatePromotion } from "./redux/promotionsSlice";
-import axios from "axios";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { Card, Grid2, Typography, TextField, Button, Table, TableHead, TableRow, TableCell, TableBody, TableSortLabel, Select, MenuItem, Snackbar, Alert } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from 'dayjs';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { useTranslation } from "react-i18next";
+import axios from "axios";
 
-const API_URL = "http://localhost:8000/promotions";
-
-const formatDate = (date) => new Date(date).toLocaleDateString()
-const formatInt = (value) => new String(value);
+const API_URL = "https://backend-promotion-prmotoion-backend.azuremicroservices.io/promotions";
 
 const PromotionDashboard = () => {
     const { t, i18n } = useTranslation();
@@ -33,14 +30,19 @@ const PromotionDashboard = () => {
     const [sortConfig, setSortConfig] = useState({ key: "name", direction: "asc" });
     const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
+
+    const formatDate = (date) => new Date(date).toLocaleDateString()
+    const formatInt = (value) => new String(value);
+
+    //Setting language headers
     const headers = {
         "Accept-Language": language
     }
+
     const fetchPromotions = async () => {
         const response = await axios.get(API_URL);
         return response.data;
     };
-
 
     const sortedPromotions = [...promotions].sort((a, b) => {
         if (!a[sortConfig.key] || !b[sortConfig.key]) return 0;
@@ -97,6 +99,10 @@ const PromotionDashboard = () => {
         },
     });
 
+    const deletePromotion = (id) => {
+        deletePromotionMutation.mutate(id);
+    };
+
     const handleInputChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
@@ -106,16 +112,14 @@ const PromotionDashboard = () => {
         setLanguage(value);
     }
     const handleDateChange = (name, value) => {
-
         setForm({ ...form, [name]: value });
     };
 
     const handleEdit = (promo) => {
-        console.log("Promo===>>>", promo);
         setForm({
             ...promo,
             ["startDate"]: dayjs(promo.startDate),
-            ["endDate"]: dayjs(promo.endDate),    
+            ["endDate"]: dayjs(promo.endDate),
         });
     };
 
@@ -129,15 +133,11 @@ const PromotionDashboard = () => {
                 }
                 setForm({ id: null, name: "", startDate: null, endDate: null, budget: "", salesImpact: "" });
             } else {
-                alert("End Date should be after Start Date");
+                alert(t("endDateValidation"));
             }
         } else {
-            alert("All required fields must be filled");
+            alert(t("fieldValidation"));
         }
-    };
-
-    const deletePromotion = (id) => {
-        deletePromotionMutation.mutate(id);
     };
 
     return (
@@ -170,7 +170,7 @@ const PromotionDashboard = () => {
                 <TextField fullWidth margin="normal" type="number" label={t("expectedSalesImpact")} name="salesImpact" value={form.salesImpact ?? ''} onChange={handleInputChange} />
                 <Button variant="contained" color="primary" onClick={addOrUpdatePromotion}>{form.id ? t("updatePromotion") : t("addPromotion")}</Button>
             </Card>
-
+            
             <Card style={{ padding: "20px", marginBottom: "20px" }}>
                 <Typography variant="h5" gutterBottom>{t("promotions")}</Typography>
                 <TextField fullWidth margin="normal" label="Search" value={search} onChange={(e) => setSearch(e.target.value)} />

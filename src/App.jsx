@@ -1,13 +1,13 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import './App.css'
+import { useTranslation } from "react-i18next";
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from "react-redux";
-import store from "./redux/store";
+import { Button } from "@mui/material";
 import ReportingPage from './ReportingDashboard';
 import PromotionDashboard from './PromotionDashboard'
-import {  QueryClient, QueryClientProvider } from 'react-query';
-import { Button } from "@mui/material";
+import store from "./redux/store";
+import './App.css'
 import "./i18n";
-import { useTranslation } from "react-i18next";
 
 const queryClient = new QueryClient();
 

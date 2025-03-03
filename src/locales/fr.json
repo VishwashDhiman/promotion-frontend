@@ -21,5 +21,7 @@
     "resetFilter": "Réinitialiser le filtre",
     "totalPromotions": "Promotions totales",
     "totalBudget": "Budget total",
-    "averageSalesImpact": "Impact moyen sur les ventes"
+    "averageSalesImpact": "Impact moyen sur les ventes",
+    "endDateValidation": "La date de fin doit être postérieure à la date de début",
+    "fieldValidation": "Tous les champs obligatoires doivent être remplis"
 }
